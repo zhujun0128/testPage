@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    var num = prompt("请输入一个正整数：");
+    var s = num + "的树根是";
+    var sum = 0;
+
+    function myFun(n) {
+        var t = 0;
+        while(n >= 10)
+        {
+            t += n % 10;
+            n = Math.floor(n / 10);
+        }
+        t += n;
+        return t;
+    }
+
+    if(typeof(num) != "number" && isNaN(num))
+    {
+        alert("输入的数据不是数字！");
+    }else if(num < 0 || parseInt(num) != num)
+    {
+        alert("请输入一个正整数！");
+    }
+    else
+    {
+        sum = myFun(num);
+        while(sum >= 10)
+        {
+            sum = myFun(sum);
+        }
+        alert(s + sum);
+    }
+
+</script>
+</body>
+</html>

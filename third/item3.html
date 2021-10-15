@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .container{
+            width: 800px;
+            position: absolute;
+            left: 50%;
+            margin-left: -400px;
+            margin-top: 100px;
+        }
+        input[type = "text"]{
+            width: 110px;
+            height: 30px;
+            margin-right: 10px;
+        }
+        button{
+            width: 50px;
+            height: 30px;
+            margin-left: 5px;
+        }
+        table{
+            margin-top: 30px;
+            text-align: center;
+        }
+        thead td{
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div>
+        <span>姓名：</span>
+        <input type="text">
+        <span>年纪：</span>
+        <input type="text">
+        <span>性别：</span>
+        <input type="text">
+        <button id = "btn">确定</button>
+    </div>
+    <div>
+        <table border="1">
+            <thead>
+                <tr>
+                    <td style="width: 100px;">姓名</td>
+                    <td style="width: 100px;">年纪</td>
+                    <td style="width: 100px;">性别</td>
+                    <td colspan="2" style="width: 280px;">操作</td>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <table border="1">
+            <thead>
+                <tr>
+                    <td style="width: 280px;">选择替换的选项</td>
+                    <td style="width: 100px;">姓名</td>
+                    <td style="width: 100px;">年纪</td>
+                    <td style="width: 100px;">性别</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="radio" name="t"></td>
+                    <td>lisa</td>
+                    <td>18</td>
+                    <td>女</td>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="t"></td>
+                    <td>lily</td>
+                    <td>20</td>
+                    <td>女</td>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="t"></td>
+                    <td>Icy</td>
+                    <td>19</td>
+                    <td>男</td>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="t"></td>
+                    <td>shelly</td>
+                    <td>18</td>
+                    <td>女</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    var inp = document.getElementsByTagName("input");
+    var btn = document.getElementById("btn");
+    var tab = document.getElementsByTagName("tbody");
+    var arr = new Array();
+    var rep_arr = [{name:"lisa",age:18,sex:"女"},{name:"lily",age:20,sex:"女"},{name:"Icy",age:19,sex:"男"},{name:"shelly",age:18,sex:"女"}];
+
+    function display_table() {
+        tab[0].innerHTML = "";
+        for(var i = 0;i < arr.length;i++)
+        {
+            var tr1 = document.createElement("tr");
+            tab[0].appendChild(tr1);
+            for(var j in arr[i])
+            {
+                var td1 = document.createElement("td");
+                tr1.appendChild(td1);
+                td1.innerHTML = arr[i][j];
+            }
+            var td1 = document.createElement("td");
+            tr1.appendChild(td1);
+            td1.innerHTML = "<button class='rep' onclick='rep_table("+ i +")'>替换</button><button class='del' onclick='del_table("+ i +")'>删除</button>";
+            if(i == 0)
+            {
+                var td1 = document.createElement("td");
+                tr1.appendChild(td1);
+                td1.innerHTML = "<button id='sor' onclick='sort_table()'>排序</button>";
+                td1.rowSpan = arr.length;
+            }
+        }
+    }
+
+    function del_table(n) {
+        arr.splice(n,1);
+        display_table();
+    }
+
+    function sort_table() {
+        arr.sort(function (a,b) {
+            return a.age - b.age;
+        });
+        display_table();
+    }
+
+    function rep_table(n) {
+        var flag =false;
+        for(var i = 3;i < inp.length;i++)
+        {
+            if(inp[i].checked)
+            {
+                arr[n] = rep_arr[i - 3];
+                rep_arr.splice(i - 3,1);
+                tab[1].removeChild(inp[i].parentNode.parentNode);
+                flag = true;
+                break;
+            }
+        }
+        if(flag)
+        {
+            display_table();
+        }
+        else
+        {
+            alert("必须要选择一个要替换的内容！");
+        }
+    }
+
+    btn.onclick = function () {
+        var obj = {};
+        obj.name = inp[0].value;
+        obj.age = inp[1].value;
+        obj.sex = inp[2].value;
+        if(obj.name == "")
+        {
+            alert("输入的姓名为空！");
+            return ;
+        }
+        if(obj.age == "")
+        {
+            alert("输入的年纪为空！");
+            return ;
+        }if(obj.sex == "")
+        {
+            alert("输入的性别为空！");
+            return ;
+        }
+        arr.push(obj);
+        display_table();
+        inp[0].value = "";
+        inp[1].value = "";
+        inp[2].value = "";
+    };
+</script>
+</body>
+</html>
