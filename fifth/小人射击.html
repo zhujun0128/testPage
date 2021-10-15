@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        canvas{
+            border: 1px solid;
+            background: cyan;
+        }
+    </style>
+</head>
+<body onload="onLoad()">
+    <canvas id="cvs" width="700" height="700"></canvas>
+    <script>
+        var cvs = document.getElementById("cvs");
+        var ctx = cvs.getContext("2d");
+        var gGame = null;
+        function onLoad() {
+            gGame = new Game();
+            gGame.update();
+        }
+        function Game() {
+            var _this = this;
+            this.rocker = new Rocker();
+            this.smallpeople = new smallPeople(this.rocker.angle);
+            this.bullets = [];
+            this.enemy = [new Enemy(),new Enemy(),new Enemy()];
+            this.attackCD = 20;
+            this.enemyCD = 30;
+            this.frame = this.attackCD;
+            this.lastframe = 0;
+            this.count = 0;
+            this.score = 0;
+            this.update = function () {
+                _this.frame++;
+                _this.count++;
+                ctx.clearRect(0,0,cvs.width,cvs.height);
+                if(_this.count == _this.enemyCD) {
+                    _this.enemy.push(new Enemy());
+                    _this.count = 0;
+                }
+                if(_this.bullets.length >= 1) {
+                    _this.bullets.forEach(function (item,index) {
+                        item.updateStatus();
+                        _this.enemy.forEach(function (t,i) {
+                            if(Math.abs(t.x - item.x) <= t.enemyRadius + 25 && Math.abs(item.y - t.y) <= t.enemyRadius) {
+                                _this.enemy.splice(i,1);
+                                _this.bullets.splice(index,1);
+                                _this.score++;
+                            }
+                        });
+                        if(item.dead){
+                            _this.bullets.splice(index,1);
+                        }
+                        item.draw();
+                    })
+                }
+                if(_this.enemy.length >= 1) {
+                    _this.enemy.forEach(function (item,index) {
+                        item.updateStatus();
+                        if(item.dead){
+                            _this.enemy.splice(index,1);
+                        }
+                        item.draw();
+                    })
+                }
+                _this.rocker.draw();
+                _this.smallpeople.angle = _this.rocker.angle;
+                _this.smallpeople.updatePos();
+                _this.smallpeople.draw();
+                ctx.beginPath();
+                ctx.fillStyle = "white";
+                ctx.font = "bold 32px Arial";
+                ctx.textAlign = "start";
+                ctx.fillText("分数：" + _this.score,5,35);
+                ctx.fill();
+                window.requestAnimationFrame(_this.update);
+            };
+            cvs.onmousedown = function () {
+                document.onmousemove = function (e) {
+                    _this.rocker.angle = Math.atan2(_this.rocker.y - e.pageY + cvs.offsetTop,e.pageX - cvs.offsetLeft - _this.rocker.x) * 180 / Math.PI * -1;
+                }
+            };
+            document.onmouseup = function () {
+                document.onmousedown = null;
+                document.onmousemove = null;
+            };
+            document.onkeydown = function (e) {
+                if(e.keyCode == 32){
+                    if(_this.frame - _this.lastframe >= _this.attackCD) {
+                        _this.bullets.push(new Bullet(_this.smallpeople.x + 15,_this.smallpeople.y + 15));
+                        _this.lastframe = _this.frame;
+                    }
+                }
+            }
+        }
+        function Rocker() {
+            var _this = this;
+            this.radius = 80;
+            this.x = cvs.width / 4;
+            this.y = cvs.height / 4 * 3;
+            this.angle = 90;
+            this.r = 10;
+            this.draw = function () {
+                ctx.save();
+                ctx.beginPath();
+                ctx.strokeStyle = "black";
+                ctx.arc(_this.x,_this.y,_this.radius,0,Math.PI / 180 * 360);
+                ctx.stroke();
+                ctx.translate(_this.x,_this.y);
+                ctx.rotate(Math.PI / 180 *_this.angle);
+                ctx.beginPath();
+                ctx.fillStyle = "green";
+                ctx.arc(_this.radius,0,_this.r,0,Math.PI / 180 * 360);
+                ctx.fill();
+                ctx.restore();
+            };
+        }
+        function smallPeople(angle) {
+            var _this = this;
+            this.angle = angle;
+            this.x = 10;
+            this.y = 50;
+            this.speed = 1;
+            this.draw = function () {
+                ctx.beginPath();
+                ctx.fillStyle = "black";
+                ctx.arc(_this.x,_this.y,10,0,Math.PI / 180 * 360);//头
+                ctx.fill();
+                ctx.beginPath();
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = "black";
+                ctx.moveTo(_this.x,_this.y + 15);
+                ctx.lineTo(_this.x + 15,_this.y + 15);//枪
+                ctx.stroke();
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(_this.x,_this.y);
+                ctx.lineTo(_this.x,_this.y + 25);//身体
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(_this.x,_this.y + 25);
+                ctx.lineTo(_this.x - 10,_this.y + 35);//左腿
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(_this.x,_this.y + 25);
+                ctx.lineTo(_this.x + 10,_this.y + 35);//右腿
+                ctx.stroke();
+            };
+            this.updatePos = function () {
+                _this.x += _this.speed * Math.cos(Math.PI / 180 * _this.angle);
+                _this.y += _this.speed * Math.sin(Math.PI / 180 * _this.angle);
+                if(_this.x < 0) {
+                    _this.x = 0
+                }else if(_this.x > cvs.width) {
+                    _this.x = cvs.width;
+                }
+                if(_this.y < 0) {
+                    _this.y = 0;
+                }else if(_this.y > cvs.height) {
+                    _this.y = cvs.height;
+                }
+            }
+        }
+        function Bullet(x,y) {
+            var _this = this;
+            this.x = x;
+            this.y = y;
+            this.speed = 3;
+            this.dead = false;
+            this.draw = function () {
+                ctx.beginPath();
+                ctx.strokeStyle = "blue";
+                ctx.moveTo(_this.x,_this.y);
+                ctx.lineTo(_this.x + 25,_this.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(_this.x + 25,_this.y);
+                ctx.lineTo(_this.x + 20,_this.y - 5);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(_this.x + 25,_this.y);
+                ctx.lineTo(_this.x + 20,_this.y + 5);
+                ctx.stroke();
+            };
+            this.updateStatus = function () {
+                _this.x += _this.speed;
+                if(_this.x > cvs.width) {
+                    _this.dead = true;
+                }
+            }
+        }
+        function Enemy() {
+            var _this = this;
+            this.enemyRadius = 20;
+            this.x = Math.floor(Math.random() * cvs.width);
+            this.y = Math.floor(Math.random() * 300);
+            this.speed = 1;
+            this.angle = Math.floor(Math.random() * 360);
+            this.dead = false;
+            this.draw = function () {
+                ctx.beginPath();
+                ctx.strokeStyle = "red";
+                ctx.arc(_this.x,_this.y,_this.enemyRadius,0,Math.PI / 180 * 360);
+                ctx.font = "bold 18px Arial";
+                ctx.textAlign = "center";
+                ctx.strokeText("病毒",_this.x,_this.y + _this.enemyRadius / 4);
+                ctx.stroke();
+            };
+            this.updateStatus = function () {
+                _this.x += _this.speed * Math.cos(Math.PI / 180 * _this.angle);
+                _this.y += _this.speed * Math.sin(Math.PI / 180 * _this.angle);
+                if(_this.x + _this.enemyRadius <= 0||_this.x - _this.enemyRadius >= cvs.width ||_this.y + _this.enemyRadius <= 0||_this.y - _this.enemyRadius>= cvs.height){
+                    _this.dead = true;
+                }
+            };
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        canvas{
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="cvs" width="600" height="600"></canvas>
+    <script>
+        var cvs = document.getElementById("cvs");
+        var ctx = cvs.getContext("2d");
+        var R = 150,r = 60;
+        var x = 300,y = 300;
+        ctx.beginPath();
+        ctx.arc(x,y,r,0,Math.PI / 180 * 360);//小圆
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(x,y,R,0,Math.PI / 180 * 360);//大圆
+        ctx.stroke();
+        function draw(i) {
+            if(i > 1) {
+                draw(i - 1);
+            }
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(Math.PI / 180 * (18 + 72 * i)) * R + x,-Math.sin(Math.PI / 180 * (18 + 72 * i)) * R + y);
+            ctx.lineTo(Math.cos(Math.PI / 180 * (54 + 72 * i)) * r + x,-Math.sin(Math.PI / 180 * (54 + 72 * i)) * r + y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(Math.PI / 180 * (18 + 72 * i)) * R + x,-Math.sin(Math.PI / 180 * (18 + 72 * i)) * R + y);
+            ctx.lineTo(Math.cos(Math.PI / 180 * (54 + 72 * (i - 1))) * r + x,-Math.sin(Math.PI / 180 * (54 + 72 * (i - 1))) * r + y);
+            ctx.stroke();
+        }
+        draw(5);
+    </script>
+</body>
+</html>
