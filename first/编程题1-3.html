@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编程题1-3</title>
+</head>
+<body>
+<script>
+    var str = "abcabcabcabcabcab";
+    var s1 = "ab";
+    function getNumAndsub(str,s1) {
+        var key = 0;
+        var num = 0;
+        var sub1 = new Array();
+        for(var i = 0; i < str.length;)
+        {
+            if((key = str.indexOf(s1,i)) != -1)
+            {
+                sub1[num++] = key;
+                i = key + s1.length;
+            }
+            else
+            {
+                i++;
+            }
+        }
+        document.write("1.在字符串'"+ str + "'中'ab'共出现了" + num + "次，下标位置分别是：");
+        for(var i = 0; i< num;i++)
+        {
+            document.write(sub1[i] + ",");
+        }
+        document.write("<hr>");
+    }
+
+    function getOneByNum(num1,num2,num3) {
+        var str1 = "";
+        var str2 = num3.toString();
+        var key = 0;
+        var num = 0;
+        for(var i = num1; i <= num2;i++)
+        {
+            str1 += i;
+        }
+        for(var i = 0 ;i < str1.length;)
+        {
+            if((key = str1.indexOf(str2,i)) != -1)
+            {
+                num++;
+                i = key + str2.length ;
+            }
+            else
+            {
+                i++;
+            }
+        }
+        document.write("2.从" + num1 + "到" + num2 + "中，" + num3 + "出现了" + num + "次<hr>");
+    }
+
+    function removeNum(san) {
+        var newstr = "";
+        for(var i = 0; i < san.length;i++)
+        {
+            if(isNaN(san[i]))
+            {
+                newstr += san[i];
+            }
+        }
+        document.write("3.删除字符串'" + san + "'中的数字后，得到：'" + newstr + "'<hr>");
+    }
+    getNumAndsub(str,s1);
+    getOneByNum(1,400,1);
+    san = "123a456b789c";
+    removeNum(san);
+</script>
+</body>
+</html>
