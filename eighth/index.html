@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery.js"></script>
+    <style>
+        #openBtn{
+            width: 150px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #0099cc;
+            border:none;
+            cursor: pointer;
+        }
+        #model{
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            display: none;
+        }
+        .createFile{
+            width: 600px;
+            min-height: 300px;
+            background-color: white;
+            padding: 20px;
+        }
+        .fileContent{
+            width: 90%;
+            margin: 10px auto;
+            border: 1px solid #eee;
+            padding: 10px;
+            box-sizing: border-box;
+            min-height: 200px;
+        }
+        .files{
+            margin-bottom: 5px;
+            cursor: pointer;
+            padding: 10px 10px 5px 16px;
+            box-sizing: border-box;
+        }
+        .allBtn{
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .createFileBtn{
+            border:1px solid #0099cc;
+            background-color: white;
+            width: 100px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            color: #0099cc;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .sure,.cancel{
+            width: 70px;
+            text-align: center;
+            border-radius: 5px;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+        .sure{
+            background-color: #0099cc;
+            border: 1px solid #0099cc;
+            color: white;
+        }
+        .cancel{
+            color: #333;
+            background-color: #fff;
+            border:1px solid #ccc;
+        }
+        .inputName{
+            display: flex;
+            margin-left: 16px;
+        }
+        .inputName > input{
+            width: 150px;
+            height: 24px;
+            padding-left: 3px;
+        }
+        .inputName > div{
+            width: 28px;
+            height: 28px;
+            text-align: center;
+            line-height: 28px;
+            border: 1px solid #0099cc;
+            color: #0099cc;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<button id="openBtn">打开文件夹</button>
+<div id="model">
+    <div class="createFile">
+        <p>文件创建</p>
+        <hr/>
+        <div class="fileContent">
+            <p>全部文件</p>
+            <div class="allFile files click"></div>
+        </div>
+        <hr/>
+        <div class="allBtn">
+            <button class="createFileBtn">新建文件夹</button>
+            <div>
+                <button class="sure">确定</button>
+                <button class="cancel">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $("#openBtn").click(function () {
+            $("#model").css("display","flex");
+        });
+        $(".cancel,.sure").click(function () {
+            $("#model").hide();
+        });
+        $(".createFileBtn").click(function () {
+            var t = "<div class='inputName'><input type='text'><div class='right'>√</div><div class='error'>×</div></div>";
+            var bool = $(".files").hasClass("click");
+            if(!bool){
+                $('.allFile').addClass("click");
+            }
+            $(".click").append(t);
+            $(".right").click(function () {
+                var val = $(this).parent().find("input").val();
+                if(val == ""){
+                    alert("文件名不能为空！");
+                }else{
+                    $(this).parent().parent().append("<div class='files'>"+val+"</div>");
+                    $(this).parent().remove();
+                }
+            });
+            $(".error").click(function () {
+                $(this).parent().remove();
+            });
+            $(".files").click(function (e) {
+                $(".files").removeClass("click");
+                $(e.target).addClass("click");
+            })
+        })
+    })
+</script>
+</body>
+</html>

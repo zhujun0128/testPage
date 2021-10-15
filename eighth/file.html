@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        p{
+            margin: 0;
+        }
+        #main{
+            border: 1px solid #ccc;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-size: 18px;
+            line-height: 36px;
+            padding-left: 5px;
+            padding-right: 5px;
+            padding-top: 5px;
+        }
+        #main > div{
+            overflow: auto;
+            max-height: 204px;
+            width: 100%;
+        }
+        #file_all{
+            width: 100%;
+            margin: 0;
+        }
+        .childDiv{
+            height: 36px;
+            margin-bottom: 5px;
+            padding-left: 10px;
+            cursor: pointer;
+        }
+        .grdDiv{
+            /*height: 36px;*/
+            margin-bottom: 5px;
+            padding-left: 20px;
+            cursor: pointer;
+        }
+        .grdsDiv{
+            /*height: 36px;*/
+            margin-bottom: 5px;
+            padding-left: 30px;
+            cursor: pointer;
+        }
+        .inputbox{
+            height: 40px;
+        }
+        #inp{
+            width: 150px;
+            height: 30px;
+            padding-top: 6px;
+            border-radius: 5px;
+        }
+        #btn_true,#btn_false{
+            width: 32px;
+            height: 32px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" style="margin: 50px">
+        打开文件夹
+    </button>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="top: 200px;">
+        <div class="modal-dialog" role="document" style="width: 500px;">
+            <div class="modal-content" style="height: 500px;">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">文件创建</h4>
+                </div>
+                <div class="modal-body" style="height: 380px;">
+                    <div id="main">
+                        <p id="file_all">全部文件</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="creatFile" class="btn btn-default" style="float: left;padding-left: 10px;">新建文件夹</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var flag = 0,count = 0;
+        var _this = null;
+        $(function () {
+            $("#file_all").click(function () {
+                $("#main div").css("backgroundColor","white");
+                $(this).css("backgroundColor","skyBlue");
+
+                $("#creatFile").click(function () {
+                    if(count == 0)
+                    {
+                        if(flag == 0)
+                        {
+                            $("#main").append("<div class='inputbox'><input type='text' id='inp'><button id='btn_true'>√</button><button id='btn_false'>×</button></div>");
+                        } else {
+                            $(_this).after("<div class='inputbox'><input type='text' id='inp'><button id='btn_true'>√</button><button id='btn_false'>×</button></div>");
+                        }
+                        count++;
+                    }
+                    if(flag == 0)
+                    {
+                        $(".inputbox").css("padding-left","10px");
+                        $("#file_all").css("backgroundColor","white");
+                    } else if(flag == 1){
+                        $(".inputbox").css("padding-left","20px");
+                        $(_this).css("backgroundColor","white");
+                    } else{
+                        $(".inputbox").css("padding-left","30px");
+                        $(_this).css("backgroundColor","white");
+                    }
+                    $("#inp").css("backgroundColor","darkseagreen");
+
+                    $("#btn_true").click(function () {
+                        var value = $("#inp").val();
+                        $(".inputbox").remove();
+                        if(count == 1)
+                        {
+                            if(flag == 0)
+                            {
+                                $("#main").append("<div class='childDiv'><p>" + value + "</p></div>");
+                            } else if(flag == 1){
+                                $(_this).after("<div class='grdDiv'><p>" + value + "</p></div>");
+                                _this = null;
+                                flag = 0;
+                            } else {
+                                $(_this).after("<div class='grdsDiv'><p>" + value + "</p></div>");
+                                _this = null;
+                                flag = 0;
+                            }
+                            count = 0;
+                        }
+
+                        $(".childDiv").each(function () {
+                            $(this).click(function () {
+                                _this = this;
+                                $("#file_all").css("backgroundColor","white");
+                                $(this).css("backgroundColor","skyBlue");
+                                flag = 1;
+                            });
+                        });
+
+                        $(".grdDiv").each(function () {
+                            $(this).click(function () {
+                                _this = this;
+                                $("#file_all").css("backgroundColor","white");
+                                $(this).css("backgroundColor","skyBlue");
+                                flag = 2;
+                            });
+                        })
+                    });
+
+                    $("#btn_false").click(function () {
+                        $(".inputbox").remove();
+                        _this = null;
+                        flag = 0;
+                        count = 0;
+                    });
+                });
+            });
+        })
+    </script>
+</body>
+</html>
