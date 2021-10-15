@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="jquery.js"></script>
+    <style>
+        table{
+            margin-top: 200px;
+            margin-left: 200px;
+            border-collapse: collapse;
+        }
+        td{
+            width: 75px;
+            height: 75px;
+        }
+        button{
+            margin-left: 20px;
+            margin-top: 20px;
+        }
+        #start{
+            margin-left: 300px;
+        }
+        #box{
+            width: 800px;
+            height: 200px;
+            background-color: rgba(152,152,152,0.8);
+            position: relative;
+            left: 50%;
+            top: 50px;
+            margin-left: -400px;
+            margin-top: -100px;
+        }
+        #str{
+            text-align: center;
+            padding-top: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            color: red;
+        }
+        #close{
+            width: 60px;
+            height: 30px;
+            margin-left: 720px;
+            margin-top: 70px;
+        }
+    </style>
+</head>
+<body>
+    <table border="1">
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <button id="start">开始</button>
+    <button id="end">结束</button>
+    <div id="box">
+        <p id="str"></p>
+        <button id="close">关闭</button>
+    </div>
+    <script>
+        var timer = null;
+        var prize = ["中奖","未中奖","中奖","中奖","未中奖","未中奖","中奖","未中奖","中奖","未中奖","中奖","中奖","未中奖","未中奖","中奖","未中奖"];
+        var num;
+        function time() {
+            num = Math.floor(Math.random() * 16);
+            $("td").css("backgroundColor","white");
+            $("td:eq(" + num + ")").css("backgroundColor","green");
+        }
+        $(function () {
+            $("#end").attr("disabled", true);
+            $("#box").hide();
+            $("#start").click(function () {
+                timer = setInterval(time,500);
+                $("#start").attr("disabled", true);
+                $("#end").attr("disabled", false);
+            });
+            $("#end").click(function () {
+                clearInterval(timer);
+                $("#str").text(prize[num]);
+                $("#end").attr("disabled", true);
+                $("#box").show();
+            });
+            $("#close").click(function () {
+                $("#box").hide();
+                $("#start").attr("disabled", false);
+            })
+        })
+    </script>
+</body>
+</html>

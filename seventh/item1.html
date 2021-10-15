@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="jquery.js"></script>
+    <style>
+        table{
+            border-collapse: collapse;
+            text-align: center;
+        }
+        td{
+            height: 35px;
+        }
+        table input{
+            height: 24px;
+            width: 160px;
+            text-align: right;
+        }
+        button{
+            margin-top: 20px;
+        }
+        .err{
+            border: 2px solid red;
+        }
+    </style>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <td style="width:150px;">学号</td>
+                <td style="width: 60px;">姓名</td>
+                <td style="width: 180px;">平时成绩</td>
+                <td style="width: 180px;">期末成绩</td>
+                <td style="width: 180px;">总成绩</td>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <button>提交录入结果</button>
+    <script>
+        var students =  [{no:"10220418101",name:"邬淑君",score1:0,score2:0,score3:0},{no:"10220418102",name:"萧甜",score1:0,score2:0,score3:0}
+            ,{no:"10220418103",name:"姜杨",score1:0,score2:0,score3:0},{no:"10220418104",name:"潘文杰",score1:0,score2:0,score3:0},
+            {no:"10220418105",name:"李晨涵",score1:0,score2:0,score3:0},{no:"10220418106",name:"凤若萌",score1:0,score2:0,score3:0},
+            {no:"10220418107",name:"杨佳玉",score1:0,score2:0,score3:0},{no:"10220418108",name:"柳汝鑫",score1:0,score2:0,score3:0},
+            {no:"10220418109",name:"姜晓庆",score1:0,score2:0,score3:0},{no:"10220418110",name:"潘晨茜",score1:0,score2:0,score3:0}];
+        function inputScore(row,col) {
+            var num = row * 3 + col;
+            var value = $("input:eq(" + num + ")").val();
+            if((parseFloat(value).toString() != "NaN") && value >=0 && value <= 100)
+            {
+                if(col == 0)
+                {
+                    students[row].score1 = value;
+                }
+                else if(col == 1)
+                {
+                    students[row].score2 = value;
+                }
+                students[row].score3 = students[row].score1 * 0.3 + students[row].score2 * 0.7;
+                showData();
+                return;
+            }
+            else
+            {
+                $("input:eq(" + num + ")").addClass("err");
+                setTimeout(function () {
+                    $("input:eq(" + num + ")").removeClass("err");
+                    if(col == 0)
+                    {
+                        $("input:eq(" + num + ")").val(students[row].score1);
+                    }
+                    else if(col == 1)
+                    {
+                        $("input:eq(" + num + ")").val(students[row].score2);
+                    }
+                },3000);
+            }
+        }
+        function showData() {
+            $("table tbody").empty();
+            for(var i = 0;i < students.length;i++)
+            {
+                $("table tbody").append("<tr>");
+                $("table tbody").append("<td>" + students[i].no + "</td>");
+                $("table tbody").append("<td>" + students[i].name + "</td>");
+                $("table tbody").append("<td><input type='text' class='s1' onchange='inputScore(" + i + ",0)' value='" + students[i].score1 + "'></td>");
+                $("table tbody").append("<td><input type='text' class='s2' onchange='inputScore(" + i + ",1)' value='" + students[i].score2 + "'></td>");
+                $("table tbody").append("<td><input type='text' class='s3' onchange='inputScore(" + i + ",2)' disabled value='" + students[i].score3 + "'></td>");
+                $("table tbody").append("</tr>");
+            }
+        }
+        $(function () {
+            showData();
+        })
+    </script>
+</body>
+</html>
